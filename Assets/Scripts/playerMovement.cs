@@ -1,21 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class playerMovement : MonoBehaviour
 {
+    [SerializeField]
+    private int speed;
 
-    public int speed;
+    
+    public int jumpForce;
 
     private float horizontal;
     private float vertical;
 
     Rigidbody rb;
 
+    public TMP_Text HealthCounter;
+
+    private int health = 3;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        HealthCounter.text = "Health: " + health;
     }
 
     // Update is called once per frame
@@ -26,7 +36,12 @@ public class playerMovement : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            rb.AddForce(transform.up * 500);
+            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        }
+
+        if (health == 0)
+        {
+            SceneManager.LoadScene("test scene");
         }
     }
 
@@ -39,4 +54,11 @@ public class playerMovement : MonoBehaviour
 
         rb.MovePosition(position);
     }
+
+    public void LoseHealth()
+    {
+        health--;
+        HealthCounter.text = "Health: " + health;
+    }
+
 }
