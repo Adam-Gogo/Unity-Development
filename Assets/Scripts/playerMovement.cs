@@ -18,14 +18,17 @@ public class playerMovement : MonoBehaviour
     Rigidbody rb;
 
     public TMP_Text HealthCounter;
+    public TMP_Text ScoreText;
 
     private int health = 3;
+    private int score = 0;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         HealthCounter.text = "Health: " + health;
+        ScoreText.text = "Score: " + score;
     }
 
     // Update is called once per frame
@@ -41,7 +44,7 @@ public class playerMovement : MonoBehaviour
 
         if (health == 0)
         {
-            SceneManager.LoadScene("test scene");
+            LoadScene("test scene");
         }
     }
 
@@ -61,4 +64,29 @@ public class playerMovement : MonoBehaviour
         HealthCounter.text = "Health: " + health;
     }
 
+    public int getHealth()
+    {
+        return health;
+    }
+
+    public void GainHealth()
+    {
+        health++;
+        HealthCounter.text = "Health: " + health;
+    }
+
+    public void LoadScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+    }
+
+    public void ChangeScore(int s)
+    {
+        score += s;
+        if(score < 0)
+        {
+            score = 0;
+        }
+        ScoreText.text = "Score: " + score;
+    }
 }
