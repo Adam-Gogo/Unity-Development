@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class playerMovement : MonoBehaviour
 {
     [SerializeField]
     private int speed;
 
-    
     public int jumpForce;
 
     private float horizontal;
@@ -17,18 +17,20 @@ public class playerMovement : MonoBehaviour
 
     Rigidbody rb;
 
-    public TMP_Text HealthCounter;
     public TMP_Text ScoreText;
 
     private int health = 3;
     private int score = 0;
 
+    public Image mask;
+    private float originalSize;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        HealthCounter.text = "Health: " + health;
         ScoreText.text = "Score: " + score;
+        originalSize = mask.rectTransform.rect.width;
     }
 
     // Update is called once per frame
@@ -61,7 +63,7 @@ public class playerMovement : MonoBehaviour
     public void LoseHealth()
     {
         health--;
-        HealthCounter.text = "Health: " + health;
+        editMask(health/3.0f);
     }
 
     public int getHealth()
@@ -72,7 +74,7 @@ public class playerMovement : MonoBehaviour
     public void GainHealth()
     {
         health++;
-        HealthCounter.text = "Health: " + health;
+        editMask(health/3.0f);
     }
 
     public void LoadScene(string sceneName)
@@ -88,5 +90,10 @@ public class playerMovement : MonoBehaviour
             score = 0;
         }
         ScoreText.text = "Score: " + score;
+    }
+
+    public void editMask(float f)
+    {
+        mask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, originalSize * f);
     }
 }
