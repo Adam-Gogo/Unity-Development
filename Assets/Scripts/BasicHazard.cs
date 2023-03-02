@@ -28,7 +28,7 @@ public class BasicHazard : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<playerMovement>() == player)
         {
-            player.LoseHealth();
+            player.LoseHealth(1);
         }
     }
 

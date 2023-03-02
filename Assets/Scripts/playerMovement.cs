@@ -15,7 +15,7 @@ public class playerMovement : MonoBehaviour
     private float horizontal;
     private float vertical;
 
-    Rigidbody rb;
+    public Rigidbody rb;
 
     public TMP_Text ScoreText;
 
@@ -24,6 +24,8 @@ public class playerMovement : MonoBehaviour
 
     public Image mask;
     private float originalSize;
+
+    bool grounded;
 
     // Start is called before the first frame update
     void Start()
@@ -39,12 +41,13 @@ public class playerMovement : MonoBehaviour
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
 
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space) && grounded)
         {
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            grounded = false;
         }
 
-        if (health == 0)
+        if (health <= 0)
         {
             LoadScene("test scene");
         }
@@ -60,9 +63,9 @@ public class playerMovement : MonoBehaviour
         rb.MovePosition(position);
     }
 
-    public void LoseHealth()
+    public void LoseHealth(int damage)
     {
-        health--;
+        health -= damage;
         editMask(health/3.0f);
     }
 
@@ -95,5 +98,13 @@ public class playerMovement : MonoBehaviour
     public void editMask(float f)
     {
         mask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, originalSize * f);
+    }
+
+    public void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("Ground"))
+        {
+            grounded = true;
+        }
     }
 }
