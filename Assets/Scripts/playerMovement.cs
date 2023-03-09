@@ -4,18 +4,22 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class playerMovement : MonoBehaviour
 {
     [SerializeField]
     private int speed;
 
-    public int jumpForce;
+    public int jumpHeight;
 
-    private float horizontal;
-    private float vertical;
+    private CharacterController controller;
+    private PlayerInput input;
+    private Vector3 velocity;
 
-    public Rigidbody rb;
+    private bool grounded;
+
+    public float gravityValue = -9.81f;
 
     public TMP_Text ScoreText;
 
@@ -25,12 +29,11 @@ public class playerMovement : MonoBehaviour
     public Image mask;
     private float originalSize;
 
-    bool grounded;
-
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        controller = GetComponent<CharacterController>();
+        input = GetComponent<PlayerInput>();
         ScoreText.text = "Score: " + score;
         originalSize = mask.rectTransform.rect.width;
     }
@@ -38,29 +41,28 @@ public class playerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        horizontal = Input.GetAxis("Horizontal");
-        vertical = Input.GetAxis("Vertical");
-
-        if(Input.GetKeyDown(KeyCode.Space) && grounded)
+        grounded = controller.isGrounded;
+        if (grounded && velocity.y < 0)
         {
-            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-            grounded = false;
+            velocity.y = 0;
         }
+
+        Vector2 inputMove = input.actions["Move"].ReadValue<Vector2>();
+        Vector3 move = new Vector3(inputMove.x, 0, inputMove.y);
+        controller.Move(move * Time.deltaTime * speed);
+
+        if (input.actions["Jump"].triggered && grounded)
+        {
+            velocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+        }
+
+        velocity.y += gravityValue * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
 
         if (health <= 0)
         {
             LoadScene("test scene");
         }
-    }
-
-    void FixedUpdate()
-    {
-        Vector3 position = transform.position;
-
-        position.x += speed * horizontal * Time.deltaTime;
-        position.z += speed * vertical * Time.deltaTime;
-
-        rb.MovePosition(position);
     }
 
     public void LoseHealth(int damage)
