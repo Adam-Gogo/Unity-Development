@@ -102,11 +102,4 @@ public class playerMovement : MonoBehaviour
         mask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, originalSize * f);
     }
 
-    public void OnCollisionEnter(Collision collision)
-    {
-        if(collision.gameObject.CompareTag("Ground"))
-        {
-            grounded = true;
-        }
-    }
 }
