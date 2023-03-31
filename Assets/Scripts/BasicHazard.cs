@@ -37,7 +37,6 @@ public class BasicHazard : MonoBehaviour
                 transform.rotation = Quaternion.Euler(rot);
                 movingRight = !movingRight;
             }
-
         }
     }
 
