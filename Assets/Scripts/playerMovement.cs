@@ -61,7 +61,7 @@ public class playerMovement : MonoBehaviour
 
         if (health <= 0)
         {
-            LoadScene("test scene");
+            LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 
